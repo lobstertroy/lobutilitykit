@@ -1,0 +1,26 @@
+function convertToCSV(fails) {
+  const arr = typeof fails !== 'object' ? JSON.parse(fails) : fails;
+  let str = 'resource_id,error_code,error_message\r\n';
+
+  for (let i = 0; i < arr.length; i++) {
+    let line = '';
+    for (let index in arr[i]) {
+      if (line !== '') line += ",";
+      line += arr[i][index];
+    }
+    str += line + "\r\n";
+  }
+  return str;
+}
+
+function exportCSV(fails, filename = 'failed_to_cancel.csv') {
+  const csvData = convertToCSV(fails);
+  const csvBlob = new Blob([csvData], { type: 'text/csv' });
+  const url = URL.createObjectURL(csvBlob);
+  const link = document.createElement('a');
+  link.setAttribute('href', url);
+  link.setAttribute('download', filename);
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+}
