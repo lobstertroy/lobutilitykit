@@ -2,9 +2,9 @@
   "name": "lob-utility-kit",
   "productName": "Lob Utility Kit",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.3.0",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite build && vite",
     "build": "vue-tsc && vite build && electron-builder",
     "preview": "vite preview"
   },

@@ -10,16 +10,30 @@ export default defineConfig({
     electron({
       main: {
         // Shortcut of `build.lib.entry`.
-        entry: 'electron/main.js',
+        entry: 'main.js',
       },
       preload: {
         // Shortcut of `build.rollupOptions.input`.
         // Preload scripts may contain Web assets, so use the `build.rollupOptions.input` instead `build.lib.entry`.
-        input: path.join(__dirname, 'electron/preload.js'),
+        input: path.join(__dirname, 'preload.js'),
       },
       // Ployfill the Electron and Node.js built-in modules for Renderer process.
       // See 👉 https://github.com/electron-vite/vite-plugin-electron-renderer
       renderer: {},
     }),
   ],
+  build: {
+    //adjust build options
+    rollupOptions: {
+      //include documentation folder & contents in output
+      output: {
+        assetFileNames: (assetInfo) => {
+          if (assetInfo.name.includes('documentation')) {
+            return 'documentation/[name].[ext]';
+          }
+          return 'assets/[name].[ext]'
+        }
+      }
+    }
+  }
 })

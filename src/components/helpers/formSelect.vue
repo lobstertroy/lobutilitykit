@@ -1,7 +1,25 @@
 <script setup>
-import { defineEmits, defineProps } from 'vue'
-const props = defineProps(['hasSfm']);
-const hasSfm = props.hasSfm;
+import { defineEmits, defineProps, ref } from 'vue'
+const props = defineProps(['usekey']);
+const apiKey = props.usekey;
+const hasSfm = ref(false);
+function checkSfm() {
+  fetch('https://api.lob.com/v1/self_mailers', {
+    method: 'get',
+    headers: {
+      'Authorization': `Basic ${btoa(apiKey + ':')}`,
+      'Lob-Version': "2020-02-11"
+    }
+
+  }).then((res) => {
+    if (res.status !== 404 && res.status !== 401) {
+      hasSfm.value = true;
+    } else {
+      hasSfm.value = false;
+    }
+  })
+}
+checkSfm();
 
 const emit = defineEmits(['selectFormat'])
 const chk = () => emit('selectFormat', "checks");

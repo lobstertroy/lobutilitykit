@@ -49,18 +49,25 @@ const verifyAdr = () => {
 			if (result.id) adrID.value = result.id;
 			submit();
 		})
-		.catch(err => console.log(err))
+		.catch(err => console.error(err))
 };
 
 const submit = () => {
-	emit('pushFrom', adrID.value)
+	function validateAddress(input) {
+		const regex = /^adr_[0-9a-fA-F]{16}$/
+		return regex.test(input) || !useFrom.value
+	}
+
+	if (validateAddress(adrID.value.trim())) emit('pushFrom', adrID.value.trim());
+	else return alert('Please use a valid address ID (hint: does your ID start with "adr_"?)');
 }
 </script>
 
 <template>
 	<div id="fromAddress">
 		<div v-if="format === 'postcards' || format === 'self_mailers'">
-			<input type="checkbox" id="useReturn" v-model="useFrom" class="custom-checkbox"><label for="useReturn">use return address? (required for
+			<input type="checkbox" id="useReturn" v-model="useFrom" class="custom-checkbox"><label for="useReturn">use return
+				address? (required for
 				international {{ format }})</label>
 		</div>
 		<div v-if="useFrom">
@@ -97,9 +104,9 @@ const submit = () => {
 
 <style scoped>
 label {
-  margin-left: 5px;
+	margin-left: 5px;
 	height: 1em;
-  text-align: left;
+	text-align: left;
 }
 
 input {
@@ -107,57 +114,64 @@ input {
 }
 
 #adrForm {
-	text-align:start;
+	text-align: start;
 }
 
 .custom-checkbox {
-  display: none;
-  position: relative;
-    margin-right: 10px;  /* Space for custom checkbox */
-    cursor: pointer;
-    display: inline-block;
-    height: 15px;
-    line-height: 15px;
+	display: none;
+	position: relative;
+	margin-right: 10px;
+	/* Space for custom checkbox */
+	cursor: pointer;
+	display: inline-block;
+	height: 15px;
+	line-height: 15px;
 }
 
 /* Unchecked state */
 .custom-checkbox::before {
-    content: "";
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 15px;
-    height: 15px;
-    border: 2px solid #777;  /* Dark border for dark mode */
-    background-color: #888;  /* Dark background for unchecked state in dark mode */
-    transition: background-color 0.3s;
+	content: "";
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 15px;
+	height: 15px;
+	border: 2px solid #777;
+	/* Dark border for dark mode */
+	background-color: #888;
+	/* Dark background for unchecked state in dark mode */
+	transition: background-color 0.3s;
 }
 
 html.dark .custom-checkbox::before {
-  border-color: #555;
-  background-color: #444;
+	border-color: #555;
+	background-color: #444;
 }
 
 /* Checked state using the adjacent sibling combinator */
 .custom-checkbox:checked::before {
-    background-color: #555;  /* Slightly lighter dark background for checked state */
+	background-color: #555;
+	/* Slightly lighter dark background for checked state */
 }
 
 /* For the checkmark */
 .custom-checkbox:checked::after {
-    content: "✔";
-    position: absolute;
-    margin-top: 2px;
-    margin-left: -2px;
-    color: #FFF;  /* White checkmark for dark mode */
+	content: "✔";
+	position: absolute;
+	margin-top: 2px;
+	margin-left: -2px;
+	color: #FFF;
+	/* White checkmark for dark mode */
 }
 
 .custom-checkbox:hover::before {
-    border-color: #888;  /* Slightly lighter border on hover */
+	border-color: #888;
+	/* Slightly lighter border on hover */
 }
 
 /* Adding a focus style using focus-within for better accessibility */
 .custom-checkbox:focus-within::before {
-    box-shadow: 0 0 0 2px #888;  /* Focus ring */
+	box-shadow: 0 0 0 2px #888;
+	/* Focus ring */
 }
 </style>

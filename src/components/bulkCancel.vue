@@ -147,8 +147,8 @@ async function cancelAll() {
         });
         if (del.error.status_code !== 401) {
           failCodes.value[del.error.status_code + " " + del.error.message] =
-            failCodes.value[del.error.status_code + " " + del.error.message] > 0
-              ? (failCodes.value[del.error.status_code] += 1)
+            failCodes.value[del.error.status_code + " " + del.error.message]
+              ? (failCodes.value[del.error.status_code + " " + del.error.message] += 1)
               : 1;
         } else if (del.error.status_code === 401) {
           HCF.value = true;
@@ -157,8 +157,8 @@ async function cancelAll() {
         }
       }
     }).catch((err) => {
-      failList.value.push({ piece: id, error: err, message: "please retry" });
-      failCodes.value[err] = failCodes.value[err] > 0 ? failCodes.value[err] + 1 : 1;
+      failList.value.push({ piece: id, error: err.code, message: "please retry" });
+      failCodes.value[err] = failCodes.value[err] ? failCodes.value[err]++ : 1;
     });
   });
 
@@ -272,7 +272,7 @@ const reset = () => {
       </ul>
       <p v-if="failList.length > 0">Failed to cancel {{ failList.length }} IDs</p>
       <ul>
-        <li v-for="(value, key) in failCodes">{{ key }}: {{ value }} ID<span v-if="value > 1">s</span><span
+        <li v-for="(value, key) in failCodes">{{ key }}: {{ failCodes[key] }} ID<span v-if="failCodes[key] > 1">s</span><span
             v-if="key.includes(422)"><br>(Hint: are these within cancellation window?)</span></li>
       </ul>
       <button @click="exportFails" v-if="completed && !exported && failList.length > 0">Export List</button>

@@ -3,9 +3,10 @@ import Papa from 'papaparse';
 import { ref, computed, reactive, defineProps, defineEmits, triggerRef } from 'vue';
 import { v4 as uuidv4 } from 'uuid';
 
-const props = defineProps(['useForm', 'mergevars']);
+const props = defineProps(['useForm', 'mergevars', 'creativeFiles']);
 const format = props.useForm;
 const merges = props.mergevars;
+const checkBottom = props.creativeFiles.check_bottom !== undefined;
 const emit = defineEmits(['audience']);
 let file;
 const headers = ref([]);
@@ -15,7 +16,8 @@ const optional = reactive(['company', 'address_line2', 'address_country', 'merge
 const mergevars = reactive([])
 
 if (format === 'checks') {
-  required.push('message', 'bank_account', 'amount');
+  if (!checkBottom) required.push('message');
+  required.push('bank_account', 'amount');
   optional.push('memo', 'check_number');
 }
 

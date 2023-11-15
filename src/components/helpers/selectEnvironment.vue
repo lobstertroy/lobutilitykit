@@ -12,13 +12,9 @@ const getKeys = async () => {
   const storedLiveKey = await window.api.invoke('retrieve-live-key');
   if (storedTestKey) {
     testKey.value = storedTestKey;
-  } else {
-    console.log("No Test key found.");
   }
   if (storedLiveKey) {
     liveKey.value = storedLiveKey;
-  } else {
-    console.log("No Live key found.")
   }
   if (!storedTestKey && !storedLiveKey) {
     console.error("No API keys found :(")
@@ -28,6 +24,9 @@ const getKeys = async () => {
 getKeys().then(() => {
   if (liveKey.value === '') useTest();
   if (testKey.value === '') useLive();
+}).catch(err => {
+  console.error(err);
+  emit("keyFail", true);
 })
 
 const useTest = () => { apiKey.value = testKey.value; keySelect.value = false; emit("pushKey", apiKey.value)}

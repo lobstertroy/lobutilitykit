@@ -2,16 +2,17 @@
 import { ref, defineProps, defineEmits } from 'vue'
 import FromAddress from './fromAddress.vue';
 
-const props = defineProps(['useForm', 'usekey']);
+const props = defineProps(['useForm', 'usekey', 'hasSfm']);
 const emit = defineEmits(['config']);
 
 const format = props.useForm;
 const apiKey = props.usekey;
-const entLevel = ref(false);
+const entLevel = ref(props.hasSfm);
 const fromId = ref('');
+checkSfm();
 
-const checkSfm = () => {
-  fetch('https://api.lob.com/v1/self_mailers', {
+async function checkSfm() {
+  await fetch('https://api.lob.com/v1/self_mailers', {
     method: 'get',
     headers: {
       'Authorization': `Basic ${btoa(apiKey + ':')}`,
@@ -21,9 +22,11 @@ const checkSfm = () => {
     if (res.status !== 404) {
       entLevel.value = true;
     }
+  }).catch(err => {
+    console.error(err);
+    entLevel.value = false;
   })
 }
-checkSfm();
 
 
 const adrPlace = ref('top_first_page');
@@ -31,8 +34,8 @@ const doubleSided = ref(true);
 const colorSelect = ref(false);
 const useType = ref('');
 const useRenv = ref(false);
-const renvId = ref('no_9_single_window');
-const perfPage = ref(0);
+const renvId = entLevel.value ? ref('no_9_single_window') : ref(true);
+const perfPage = ref(1);
 const useCenv = ref(false);
 const cenvId = ref('');
 const billingGroup = ref('');
@@ -77,8 +80,10 @@ const continueEmit = () => {
     if (useCenv.value) {
       config["custom_envelope"] = cenvId.value
     }
-  } else if (format === 'self_mailers') {
-    config["size"] === sfmSize.value;
+  }
+
+  if (format === 'self_mailers') {
+    config["size"] = sfmSize.value;
   }
 
   emit('config', config);
@@ -109,50 +114,57 @@ const continueEmit = () => {
         Mail</label>
     </div>
     <div id="letters" v-if="format === 'letters'">
-      <div id="adrPlace">
-        <h4>Select address placement:</h4>
-        <input type="radio" id="top_first" value="top_first_page" v-model="adrPlace"><label for="top_first">Top first
-          page</label><br>
-        <input type="radio" id="insert_blank" value="insert_blank_page" v-model="adrPlace"><label
-          for="insert_blank">Insert
-          blank page</label>
+        <div id="adrPlace">
+          <h4>Select address placement:</h4>
+          <input type="radio" id="top_first" value="top_first_page" v-model="adrPlace"><label for="top_first">Top first
+            page</label><br>
+          <input type="radio" id="insert_blank" value="insert_blank_page" v-model="adrPlace"><label
+            for="insert_blank">Insert
+            blank page</label>
+        </div>
+        <h4>Misc options</h4>
+        <div id="doubleSides">
+          <input type="checkbox" id="doublesided" v-model="doubleSided">{{ doubleSided ? 'Double-sided' : 'Single-sided'
+          }}
+        </div>
+        <div id="colorSelect">
+          <input type="checkbox" id="fullcolor" v-model="colorSelect">{{ colorSelect ? 'Color' : 'Black & White' }}
+        </div>
+        <div id="renv">
+          <input type="checkbox" id="renvSelect" v-model="useRenv"><label for="renvSelect">Use return envelope ({{ useRenv
+            ? 'yes' : 'no' }})</label><br v-if="useRenv && entLevel">
+          <input type="text" id="renvId" v-if="entLevel && useRenv" placeholder="envelope ID" v-model="renvId"><br>
+          <input type="number" id="perf" v-if="useRenv" v-model="perfPage" min=1 max="120"><label for="perf"
+            v-if="useRenv"> Select perforated page number <span v-if="adrPlace === 'insert_blank_page'">(does not include
+              address page)</span></label>
+        </div>
+        <div id="cenv" v-if="entLevel">
+          <input type="checkbox" id="cenvSelect" v-model="useCenv">Use custom envelope ({{ useCenv ? 'yes' : 'no' }})<br>
+          <input type="text" v-if="useCenv" placeholder="custom envelope ID" v-model="cenvId">
+        </div>
       </div>
-      <div id="doubleSides">
-        <h4>Double-sided?</h4>
-        <input type="checkbox" id="doublesided" v-model="doubleSided">{{ doubleSided }}
+      <div id="billgroup" v-if="entLevel">
+        <h4>Billing group (optional)</h4>
+        <input type="text" v-model="billingGroup" placeholder="billing group ID">
       </div>
-      <div id="colorSelect">
-        <h4>Color?</h4>
-        <input type="checkbox" id="fullcolor" v-model="colorSelect">{{ colorSelect }}
+      <div id="useType">
+        <h4>Use type:</h4>
+        <input type="radio" id="marketing" value="marketing" v-model="useType"><label
+          for="marketing">marketing</label><br>
+        <input type="radio" id="operational" value="operational" v-model="useType"><label
+          for="operational">operational</label>
       </div>
-      <div id="renv">
-        <h4>Use return envelope?</h4>
-        <input type="checkbox" id="renvSelect" v-model="useRenv">
-        <input type="text" id="renvId" v-if="entLevel && useRenv" placeholder="envelope ID" v-model="renvId"><br>
-        <input type="number" id="perf" v-if="useRenv" v-model="perfPage" min=0
-          max="120"><label for="perf" v-if="useRenv">Select perforated page number <span v-if="adrPlace === 'insert_blank_page'">(does not include address page)</span></label>
-      </div>
-      <div id="cenv" v-if="entLevel">
-        <h4>Use custom envelope?</h4>
-        <input type="checkbox" id="cenvSelect" v-model="useCenv">
-        <input type="text" v-if="useCenv" placeholder="envelope ID" v-model="cenvId">
-      </div>
-    </div>
-    <div id="billgroup" v-if="entLevel">
-      <h4>Billing group (optional)</h4>
-      <input type="text" v-model="billingGroup" placeholder="billing group ID">
-    </div>
-    <div id="useType">
-      <h4>Use type:</h4>
-      <input type="radio" id="marketing" value="marketing" v-model="useType"><label for="marketing">marketing</label><br>
-      <input type="radio" id="operational" value="operational" v-model="useType"><label
-        for="operational">operational</label>
-    </div>
     <button @click="continueEmit">Continue</button>
   </div>
 </template>
 
 <style scoped>
+#letters, #useType, #billgroup, #mailingClass, #sizeSelect {
+  padding-left: 75px;
+  text-align: left;
+  width: 300px;
+}
+
 label {
   height: 1.1em;
 }
@@ -161,4 +173,11 @@ input {
   height: 1.1em;
 }
 
+h4 {
+  margin: 40px 0 2px 0;
+}
+
+button {
+  margin-top: 32px;
+}
 </style>

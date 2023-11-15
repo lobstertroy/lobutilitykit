@@ -7,6 +7,7 @@ const theList = ref([]);
 const uploadSuccessful = ref(false);
 const hasHeads = ref(false);
 const processing = ref(false);
+const selectConfirm = ref(false);
 let file, csvData;
 
 const csvToList = (event) => {
@@ -26,7 +27,7 @@ const handleParsed = (data) => {
       csvData = data;
       displayColumnSelect(data[0]);
     } else {
-      alert('Headers were not selected. Defaulting to column 1; please start over if this is incorrect.')
+      alert('Headers were not selected. Please use a one-column file or select the use of headers.')
     }
   } else {
     processing.value = true;
@@ -103,24 +104,27 @@ input {
 .custom-checkbox {
   display: none;
   position: relative;
-    margin-right: 10px;  /* Space for custom checkbox */
-    cursor: pointer;
-    display: inline-block;
-    height: 15px;
-    line-height: 15px;
+  margin-right: 10px;
+  /* Space for custom checkbox */
+  cursor: pointer;
+  display: inline-block;
+  height: 15px;
+  line-height: 15px;
 }
 
 /* Unchecked state */
 .custom-checkbox::before {
-    content: "";
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 15px;
-    height: 15px;
-    border: 2px solid #777;  /* Dark border for dark mode */
-    background-color: #888;  /* Dark background for unchecked state in dark mode */
-    transition: background-color 0.3s;
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 15px;
+  height: 15px;
+  border: 2px solid #777;
+  /* Dark border for dark mode */
+  background-color: #888;
+  /* Dark background for unchecked state in dark mode */
+  transition: background-color 0.3s;
 }
 
 html.dark .custom-checkbox::before {
@@ -130,25 +134,28 @@ html.dark .custom-checkbox::before {
 
 /* Checked state using the adjacent sibling combinator */
 .custom-checkbox:checked::before {
-    background-color: #555;  /* Slightly lighter dark background for checked state */
+  background-color: #555;
+  /* Slightly lighter dark background for checked state */
 }
 
 /* For the checkmark */
 .custom-checkbox:checked::after {
-    content: "✔";
-    position: absolute;
-    margin-top: 2px;
-    margin-left: -2px;
-    color: #FFF;  /* White checkmark for dark mode */
+  content: "✔";
+  position: absolute;
+  margin-top: 2px;
+  margin-left: -2px;
+  color: #FFF;
+  /* White checkmark for dark mode */
 }
 
 .custom-checkbox:hover::before {
-    border-color: #888;  /* Slightly lighter border on hover */
+  border-color: #888;
+  /* Slightly lighter border on hover */
 }
 
 /* Adding a focus style using focus-within for better accessibility */
 .custom-checkbox:focus-within::before {
-    box-shadow: 0 0 0 2px #888;  /* Focus ring */
+  box-shadow: 0 0 0 2px #888;
+  /* Focus ring */
 }
-
 </style>
