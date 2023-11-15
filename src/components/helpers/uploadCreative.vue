@@ -50,6 +50,14 @@ const submit = async () => {
     if (checkBottom.value !== '') creatives.value["check_bottom"] = checkBottom.value;
     if (checkLogo.value !== '') creatives.value["logo"] = checkLogo.value;
   }
+
+  //iterate over properties of creatives.value to trim strings
+  for (const key in creatives.value) {
+    if (typeof creatives.value[key] === 'string') {
+      creatives.value[key] = creatives.value[key].trim();
+    }
+  }
+
   await templatePull(creatives.value);
   emit('useFiles', creatives.value);
 }
@@ -65,7 +73,7 @@ async function templatePull(creatives) {
           'Authorization': `Basic ${btoa(apikey + ":")}`
         }
       }).then(resp => resp.json()).then(resp => {
-        mergevars.push(...resp.published_version.merge_variables.keys);
+        if (resp.published_version.merge_variables) mergevars.push(...resp.published_version.merge_variables.keys);
       }).catch(err => console.error("Error fetching template:", err));
 
       fetchPromises.push(fetchPromise)

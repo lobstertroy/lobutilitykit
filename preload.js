@@ -1,4 +1,4 @@
-const { contextBridge, ipcRenderer } = require("electron");
+const { contextBridge, ipcRenderer, BrowserWindow } = require("electron");
 
 //define what API functions do in preload.js for use elsewhere
 contextBridge.exposeInMainWorld("api", {
@@ -13,7 +13,7 @@ contextBridge.exposeInMainWorld("api", {
     let hash = 0;
     if (data.length === 0) return hash;
     for (let i = 0; i < data.length; i++) {
-      hash = (hash * 31) + data.charCodeAt(i);
+      hash = hash * 31 + data.charCodeAt(i);
     }
     return hash;
   }

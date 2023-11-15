@@ -6,7 +6,7 @@ export default async function tempTemp(tempId, livekey, testkey) {
       'Authorization': `Basic ${btoa(livekey + ":")}`,
       'Lob-Version': "2020-02-11"
     }
-  }).then(resp => resp.json());
+  }).then(resp => resp.json()).catch(err => console.error(err));
 
   let eng = liveTemp.published_version.engine;
   let html = liveTemp.published_version.html;
@@ -25,7 +25,7 @@ export default async function tempTemp(tempId, livekey, testkey) {
       'Lob-Version': "2020-02-11"
     },
     body: formData
-  }).then(resp => resp.json());
+  }).then(resp => resp.json()).catch(err => console.error(err));
   //retrieve temp (test) ID from response
 
   //use temp(test) ID in test piece
