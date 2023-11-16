@@ -5,7 +5,7 @@
 - Data export
 
 ## To install
-Navigate to the most recent release (*v0.5.0-alpha*) and identify the installer for your platform. If you are on a **Mac** device (with either an Intel chip or an M1/M2 chip), utilize the Mac installer ending in *.dmg* to install the Utility Kit. If you are on a **Windows** device, utilize the Windows installer ending in *.exe* to install the Utility Kit.
+Navigate to the most recent release (*v0.5.0-alpha*) and identify the installer for your platform. If you are on a **Mac** device, utilize the Mac installer ending in *.dmg* to install the Utility Kit. If you are on a **Windows** device, utilize the Windows installer ending in *.exe* to install the Utility Kit.
 
 ## Getting started
 The first thing you will want to do is retrieve your API key(s) from your Lob account. You can find them in the API Keys tab of your account settings page [here](dashboard.lob.com/settings/api-keys). You will need your **secret keys** for this application (not the publishable keys).
