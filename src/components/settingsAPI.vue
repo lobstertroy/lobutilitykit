@@ -39,18 +39,19 @@ getTest();
 getLive();
 
 const saveTest = async () => {
-  if (await !ensureKeyWorks(testKey.value)) return;
-
-  const success = await window.api.invoke('store-test-key', testKey.value);
-  if (success) {
-    console.log("API Key saved successfully.");
-    await getTest();
-    hasTestKey.value = showTestKey.value !== '' ? true : false;
-    testKey.value = '';
+  if (await ensureKeyWorks(testKey.value)) {
+    const success = await window.api.invoke('store-test-key', testKey.value);
+    if (success) {
+      console.log("API Key saved successfully.");
+      await getTest();
+      hasTestKey.value = showTestKey.value !== '' ? true : false;
+      testKey.value = '';
+    }
   } else {
     console.error("Failed to save Test API key :(")
   }
 }
+
 const saveLive = async () => {
   if (await ensureKeyWorks(liveKey.value)) {
     const success = await window.api.invoke('store-live-key', liveKey.value);
