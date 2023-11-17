@@ -1,18 +1,18 @@
-# Vue 3 + TypeScript + Vite
+# Lob Utility Kit
+## An unofficial desktop application for core Lob functionality
+- Bulk sending
+- Bulk cancellation
+- Data export
 
-This template should help get you started developing with Vue 3 and TypeScript in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+## To install
+Navigate to the most recent release (*v0.5.0-alpha*) and identify the installer for your platform. If you are on a **Mac** device, utilize the Mac installer ending in *.dmg* to install the Utility Kit. If you are on a **Windows** device, utilize the Windows installer ending in *.exe* to install the Utility Kit.
 
-## Recommended IDE Setup
+## Getting started
+The first thing you will want to do is retrieve your API key(s) from your Lob account. You can find them in the API Keys tab of your account settings page [here](dashboard.lob.com/settings/api-keys). You will need your **secret keys** for this application (not the publishable keys).
 
-- [VS Code](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
+Copy your secret keys from your settings, then paste and upload them into the Settings page of the application. When you click the button to save your key, the application will automatically check the key for validity. If you have active keys, you shouldn't get an alert, but you may see an issue with your Live key if you don't have a payment method on file (this is expected).
 
-## Type Support For `.vue` Imports in TS
+If you don't get an alert and see that your keys have saved, that's it! You're done! You can now move on to using the app.
 
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin) to make the TypeScript language service aware of `.vue` types.
-
-If the standalone TypeScript plugin doesn't feel fast enough to you, Volar has also implemented a [Take Over Mode](https://github.com/johnsoncodehk/volar/discussions/471#discussioncomment-1361669) that is more performant. You can enable it by the following steps:
-
-1. Disable the built-in TypeScript Extension
-   1. Run `Extensions: Show Built-in Extensions` from VSCode's command palette
-   2. Find `TypeScript and JavaScript Language Features`, right click and select `Disable (Workspace)`
-2. Reload the VSCode window by running `Developer: Reload Window` from the command palette.
+## For help
+If you would like a walkthrough on how to use the application, you can find documentation in the Help tab in your menu bar. If you run into an unexpected issue within the app, open an issue here on GitHub to report it.
