@@ -3,7 +3,7 @@
  */
 {
   $schema: "https://raw.githubusercontent.com/electron-userland/electron-builder/master/packages/app-builder-lib/scheme.json",
-  appId: "AppID",
+  appId: "lobutilitykit",
   asar: true,
   productName: "Lob Utility Kit",
   directories: {
@@ -16,6 +16,8 @@
       arch: ["x64", "arm64", "universal"],
     },
     artifactName: "${productName}-Mac-${version}-Installer.${ext}",
+    category: "public.app-category.developer-tools",
+    darkModeSupport: true,
   },
   win: {
     target: [
