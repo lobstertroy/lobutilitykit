@@ -22,6 +22,7 @@ const apiKey = ref('');
 const testKey = ref('');
 const liveKey = ref('');
 const format = ref('');
+const hasSfm = ref();
 
 const getKeys = async () => {
   const storedTestKey = await window.api.invoke('retrieve-test-key');
@@ -45,28 +46,23 @@ const getKeys = async () => {
 };
 getKeys();
 
-const hasSfm = ref(false);
-async function checkSfm() {
-  fetch('https://api.lob.com/v1/self_mailers', {
+function checkSfm() {
+  fetch('https://api.lob.com/v1/self_mailers/', {
     method: 'get',
     headers: {
-      'Authorization': `Basic ${btoa(apiKey.value + ':')}`,
-      'Lob-Version': "2020-02-11"
+      'Authorization': `Basic ${btoa(apiKey.value + ':')}`
     }
 
   }).then((res) => {
     if (res.status !== 404 && res.status !== 401) {
       hasSfm.value = true;
+    } else {
+      hasSfm.value = false;
     }
   })
 }
-
 const pushKey = (value) => {
-  if (value[0].toLowerCase() === "l") {
-    apiKey.value = liveKey.value;
-  } else {
-    apiKey.value = testKey.value;
-  }
+  apiKey.value = value;
   checkSfm();
   step0.value = false;
   step1.value = true;
@@ -144,10 +140,12 @@ const reset = () => {
 <template>
   <div v-if="!HCF">
     <EnvironmentSelect @pushKey="pushKey" @keyFail="keyFail" v-if="step0"></EnvironmentSelect>
-    <FormSelect @selectFormat="selectFormat" v-if="step1" :hasSfm="hasSfm"></FormSelect>
+    <FormSelect @selectFormat="selectFormat" v-if="step1" :usekey="apiKey"></FormSelect>
     <FormConfig @config="config" v-if="step2" :useForm="format" :usekey="apiKey"></FormConfig>
-    <UploadCreative v-if="step3" :useForm="format" @useFiles="useFiles" @pullMerge="pullMerge" :usekey="apiKey"></UploadCreative>
-    <AudienceFile v-if="step4" :useForm="format" @audience="audience" :mergevars="mergevars"></AudienceFile>
+    <UploadCreative v-if="step3" :useForm="format" @useFiles="useFiles" @pullMerge="pullMerge" :usekey="apiKey">
+    </UploadCreative>
+    <AudienceFile v-if="step4" :useForm="format" @audience="audience" :mergevars="mergevars"
+      :creativeFiles="creativeFiles"></AudienceFile>
     <Metadata v-if="step5" @useMeta="useMeta" :sendSettings="sendSettings" :audience="audience"></Metadata>
     <TestPreview v-if="step6" :useForm="format" :audienceFile="audienceFile" :testKey="testKey" :usekey="apiKey"
       :sendSettings="sendSettings" :creativeFiles="creativeFiles" @confirmContinue="confirmContinue"></TestPreview>

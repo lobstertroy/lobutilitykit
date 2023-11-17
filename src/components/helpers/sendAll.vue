@@ -61,6 +61,29 @@ async function parseRow(row) {
 }
 
 function sendThis(data, idempotency) {
+  const formDataJson = (formdata) => {
+    const obj = {};
+    formdata.forEach((value, key) => {
+      //skip Files
+      if (!(value instanceof File)) {
+        //if property already exists
+        if (Object.prototype.hasOwnProperty.call(obj, key)) {
+          //if it's an array, push the new value
+          if (Array.isArray(obj[key])) {
+            obj[key].push(value);
+          } else {
+            //it's not an array, so turn it into one with the items composed of the previous value and the new value
+            obj[key] = [obj[key], value];
+          }
+        } else {
+          //if the property doesn't exist, add it :)
+          obj[key] = value;
+        }
+      }
+    });
+    return obj;
+  }
+
   return backoffFetch(`https://api.lob.com/v1/${format}?idempotency_key=${idempotency}`, {
     method: "post",
     headers: {
@@ -69,26 +92,30 @@ function sendThis(data, idempotency) {
     },
     body: data,
     keepalive: true
-  }).then((data) => {
-    if (data.id) {
-      successList.push(data);
-      sentIds.add(data.id);
+  }).then((response) => {
+    if (response.id) {
+      successList.push(response);
+      sentIds.add(response.id);
       sentCount.value = sentIds.size;
     } else {
       failList.push({
-        "error": data.error.status_code,
-        "issue": data.error.code,
-        "message": data.error.message
+        error: response.error ? response.error.status_code : 'unknown error',
+        issue: response.error ? response.error.code : 'unknown issue',
+        message: response.error ? response.error.message : 'no response ID',
+        requestData: formDataJson(data)
       });
       failCount.value++;
     }
   }).catch((err) => {
-    console.log(err)
-    failList.push(err);
+    console.error(err);
+    failList.push({
+      error: 'Exception',
+      message: err.message || 'unknown exception',
+      requestData: formDataJson(data)
+    });
     failCount.value++;
-  })
+  });
 }
-
 
 const failList = [];
 const failCount = ref(0);
@@ -146,6 +173,7 @@ function exportSuccess() {
 
 
 function convertToCSV(data) {
+  console.log(data)
   const arr = typeof data !== 'object' ? JSON.parse(data) : data;
 
   let str = '';
@@ -158,11 +186,16 @@ function convertToCSV(data) {
     let line = '';
     for (let index in arr[i]) {
       if (line !== '') line += ",";
-      line += typeof arr[i][index] === 'string' || typeof arr[i][index] === undefined ? arr[i][index] : `"${JSON.stringify(arr[i][index]).replace(/"/g, '""')}"`
+      if (typeof arr[i][index] === 'string') {
+        line += `"${arr[i][index].replace(/"/g, '""')}"`;
+      } else if (typeof arr[i][index] === 'object' && arr[i][index] !== null) {
+        line += `"${JSON.stringify(arr[i][index]).replace(/"/g, '""')}"`
+      } else {
+        line += arr[i][index];
+      }
     }
     str += line + '\r\n';
   }
-
   return str;
 }
 </script>

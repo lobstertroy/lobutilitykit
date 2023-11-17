@@ -10,8 +10,8 @@ const routes = [
   { path: "/cancel", name: "Bulk Cancel", component: BulkCancel },
   { path: "/settings", name: "Settings", component: SettingsAPI },
   { path: "/send", name: "Bulk Send", component: BulkSend },
-  {path: "/export", name: "Export Data", component: ExportData },
-  {path: "/:catchAll(.*)", component: Homepage}
+  { path: "/export", name: "Export Data", component: ExportData },
+  { path: "/:catchAll(.*)", component: Homepage },
 ];
 
 const router = createRouter({

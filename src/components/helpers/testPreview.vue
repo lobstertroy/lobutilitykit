@@ -39,7 +39,7 @@ const singleSend = async (row) => {
         retryFetch(thumbnail).then(resp => {
           pagePreview.value = resp.url;
         })
-          .catch(err => console.log(err))
+          .catch(err => console.error(err))
       } else if (res.error) {
         error.value = res.error.status_code;
         msg.value = res.error.message;
@@ -89,7 +89,7 @@ const deleteTest = (id) => {
 async function parseRow(row) {
   const formData = new FormData();
   for (const [key] of Object.entries(row)) {
-    if (key !== 'idempotency' && key !== "metadata" && key !== "to" && key !== "from" && key !== "merge_variables") {
+    if (!['idempotency', "metadata", "to", "from", "merge_variables"].includes(key)) {
       formData.append(key, row[key])
     } else if (key === "to") {
       for (const [key] of Object.entries(row["to"])) {
@@ -99,11 +99,12 @@ async function parseRow(row) {
       for (const [key] of Object.entries(row["merge_variables"])) {
         formData.append(`merge_variables[${key}]`, row["merge_variables"][key])
       }
+    } else if (key === "return_envelope") {
+      formData.append(key, "no_9_single_window")
     }
   }
   for (const [key] of Object.entries(settings)) {
-    if (key === "metadata") continue;
-    if (key === "merge_variables") continue;
+    if (["metadata", "merge variables", "custom_envelope", "return_envelope"].includes(key)) continue;
     if (key === "from") {
       formData.append("from[name]", "Test Piece");
       formData.append("from[address_line1]", "210 King St");
@@ -123,9 +124,9 @@ async function parseRow(row) {
   }
 
   for (const [key, value] of Object.entries(creatives)) {
-    if (value instanceof File) {
-      formData.append(key, value)
-    } else if (value.includes("tmpl_") && testkey !== livekey) {
+    if (value instanceof File || value.includes("tmpl_") && livekey === testkey || !value.includes("tmpl_")) {
+      formData.append(key, value);
+    } else if (value.includes("tmpl_") && livekey !== testkey) {
       const newTempl = await tempTemp(value, livekey, testkey);
       testTemps.push(newTempl);
       formData.append(key, newTempl);

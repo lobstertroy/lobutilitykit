@@ -39,6 +39,8 @@ getTest();
 getLive();
 
 const saveTest = async () => {
+  if (await !ensureKeyWorks(testKey.value)) return;
+
   const success = await window.api.invoke('store-test-key', testKey.value);
   if (success) {
     console.log("API Key saved successfully.");
@@ -50,14 +52,40 @@ const saveTest = async () => {
   }
 }
 const saveLive = async () => {
-  const success = await window.api.invoke('store-live-key', liveKey.value);
-  if (success) {
-    console.log("Live key saved successfully.");
-    await getLive();
-    hasLiveKey.value = showLiveKey.value !== '' ? true : false;
-    liveKey.value = '';
+  if (await ensureKeyWorks(liveKey.value)) {
+    const success = await window.api.invoke('store-live-key', liveKey.value);
+    if (success) {
+      console.log("Live key saved successfully.");
+      await getLive();
+      hasLiveKey.value = showLiveKey.value !== '' ? true : false;
+      liveKey.value = '';
+    }
   } else {
     console.error("Failed to save Live API key :(")
+  }
+}
+
+function ensureKeyWorks(key) {
+  if (key === '') return true;
+  try {
+    const success = fetch('https://api.lob.com/v1/letters/', {
+      method: 'get',
+      headers: {
+        'Authorization': `Basic ${btoa(key + ':')}`
+      }
+    }).then(res => {
+      if (res.status !== 401) {
+        return true;
+      } else {
+        alert("This API key appears to be incorrect or nonfunctional. Please recheck and attempt again.")
+        return false;
+      }
+    })
+    return success;
+  } catch (err) {
+    console.error(err);
+    alert("This API key appears to be incorrect or nonfunctional. Please recheck and attempt again.")
+    return false;
   }
 }
 </script>

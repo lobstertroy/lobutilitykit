@@ -1,4 +1,11 @@
-const { app, BrowserWindow, ipcMain, safeStorage } = require("electron");
+const {
+  app,
+  BrowserWindow,
+  ipcMain,
+  Menu,
+  safeStorage,
+  MenuItem,
+} = require("electron");
 const path = require("path");
 const Store = require("electron-store");
 
@@ -15,10 +22,51 @@ function createWindow() {
   });
 
   win.loadFile("dist/index.html");
-  // win.webContents.openDevTools();
+}
+
+function createHelpWindow() {
+  let helpWindow = new BrowserWindow({
+    width: 800,
+    height: 600,
+    webPreferences: {
+      nodeIntegration: false,
+      contextIsolation: false,
+    },
+  });
+
+  helpWindow.loadFile("dist/documentation/help.html");
 }
 
 app.whenReady().then(() => {
+  const existingMenu = Menu.getApplicationMenu();
+  let menuTemplate = existingMenu.items.map((menuItem) => menuItem);
+  let helpMenuIndex = menuTemplate.findIndex((item) => item.role === "help");
+  if (helpMenuIndex !== -1) {
+    menuTemplate[helpMenuIndex].submenu.append(
+      new MenuItem({
+        label: "Open Help Document",
+        click: () => {
+          createHelpWindow();
+        },
+      })
+    );
+  } else {
+    menuTemplate.push({
+      label: "Help",
+      submenu: [
+        {
+          label: "Open Help Document",
+          click: () => {
+            createHelpWindow();
+          },
+        },
+      ],
+    });
+  }
+
+  const menu = Menu.buildFromTemplate(menuTemplate);
+  Menu.setApplicationMenu(menu);
+
   createWindow();
 
   app.on("activate", () => {
@@ -58,8 +106,6 @@ app.whenReady().then(() => {
     }
     return null;
   });
-
-  console.log(window.api);
 });
 
 app.on("window-all-closed", () => {
