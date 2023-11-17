@@ -222,7 +222,6 @@ const reset = () => {
   pastePlease.value = false;
   completed.value = false;
   csvPlease.value = false;
-  getKeys();
 }
 </script>
 

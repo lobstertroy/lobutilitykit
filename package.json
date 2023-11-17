@@ -1,8 +1,17 @@
 {
   "name": "lob-utility-kit",
+  "description": "A desktop application to streamline some of Lob's core functionality",
   "productName": "Lob Utility Kit",
+  "author": "troy armstrong",
   "private": true,
-  "version": "0.3.0",
+  "version": "0.5.0",
+  "build": {
+    "files": [
+      "dist/**/*",
+      "dist-electron/**/*",
+      "build/**/*"
+    ]
+  },
   "scripts": {
     "dev": "vite build && vite",
     "build": "vue-tsc && vite build && electron-builder",
@@ -19,8 +28,14 @@
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^4.3.4",
+    "@vue/cli-service": "^5.0.8",
     "electron": "^26.1.0",
     "electron-builder": "^24.6.4",
+    "eslint": "^8.53.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "eslint-plugin-vue": "^8.0.3",
+    "prettier": "^2.4.1",
     "typescript": "^5.2.2",
     "vite": "^4.4.9",
     "vite-plugin-electron": "^0.14.0",

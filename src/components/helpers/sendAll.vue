@@ -67,7 +67,7 @@ function sendThis(data, idempotency) {
       //skip Files
       if (!(value instanceof File)) {
         //if property already exists
-        if (obj.hasOwnProperty(key)) {
+        if (Object.prototype.hasOwnProperty.call(obj, key)) {
           //if it's an array, push the new value
           if (Array.isArray(obj[key])) {
             obj[key].push(value);
