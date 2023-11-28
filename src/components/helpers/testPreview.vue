@@ -2,6 +2,7 @@
 import { ref, defineProps, defineEmits } from 'vue';
 import { v4 as uuidv4 } from 'uuid';
 import tempTemp from './tempTemp.js'
+import backoffFetch from './backoffFetch';
 
 const props = defineProps(['useForm', 'audienceFile', 'usekey', 'testKey', 'sendSettings', 'creativeFiles']);
 const emit = defineEmits(['confirmContinue']);
@@ -23,15 +24,14 @@ const singleSend = async (row) => {
   testSent.value = true;
   let formData = await parseRow(row);
   const testIdempotent = uuidv4();
-  fetch(`https://api.lob.com/v1/${format}?idempotency_key=${testIdempotent}`, {
+  backoffFetch(`https://api.lob.com/v1/${format}?idempotency_key=${testIdempotent}`, {
     method: 'post',
     headers: {
       'Authorization': `Basic ${btoa(testkey + ":")}`
     },
     body: formData,
     redirect: "follow"
-  }).then(result => result.json())
-    .then(res => {
+  }).then(res => {
       if (res.id) {
         pieceId.value = res.id;
         deleteTest(res.id);
