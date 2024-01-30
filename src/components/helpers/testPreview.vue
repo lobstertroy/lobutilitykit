@@ -104,7 +104,8 @@ async function parseRow(row) {
     }
   }
   for (const [key] of Object.entries(settings)) {
-    if (["metadata", "merge variables", "custom_envelope", "return_envelope"].includes(key)) continue;
+    console.log(settings)
+    if (["metadata", "merge variables", "custom_envelope", "return_envelope", "cards"].includes(key)) continue;
     if (key === "from") {
       formData.append("from[name]", "Test Piece");
       formData.append("from[address_line1]", "210 King St");
@@ -114,6 +115,10 @@ async function parseRow(row) {
       continue;
     }
     formData.append(key, settings[key])
+  }
+
+  if (settings["cards"]) {
+    formData.append("cards", JSON.stringify(settings["cards"]));
   }
 
   const met1 = row.metadata ? JSON.parse(row.metadata) : {};

@@ -35,6 +35,10 @@ async function parseRow(row) {
   for (const [key] of Object.entries(settings)) {
     if (key === "metadata") continue;
     if (key === "merge_variables") continue;
+    if (key === "cards") {
+      formData.append("cards", JSON.stringify(settings["cards"]));
+      continue;
+    }
     if (key === "from") {
       formData.append("from[name]", "Test Piece");
       formData.append("from[address_line1]", "210 King St");
