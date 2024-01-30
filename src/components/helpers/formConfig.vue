@@ -39,6 +39,8 @@ const perfPage = ref(1);
 const useCenv = ref(false);
 const cenvId = ref('');
 const billingGroup = ref('');
+const useCards = ref(false);
+const cards = ref('');
 const pscSize = ref('4x6');
 const sfmSize = ref('6x18_bifold');
 const mailClass = ref('usps_first_class')
@@ -79,6 +81,8 @@ const continueEmit = () => {
     }
     if (useCenv.value) {
       config["custom_envelope"] = cenvId.value
+    } if (useCards.value) {
+      config["cards"] = [cards.value];
     }
   }
 
@@ -140,7 +144,9 @@ const continueEmit = () => {
         </div>
         <div id="cenv" v-if="entLevel">
           <input type="checkbox" id="cenvSelect" v-model="useCenv">Use custom envelope ({{ useCenv ? 'yes' : 'no' }})<br>
-          <input type="text" v-if="useCenv" placeholder="custom envelope ID" v-model="cenvId">
+          <input type="text" v-if="useCenv" placeholder="custom envelope ID" v-model="cenvId"><br v-if="useCenv">
+          <input type="checkbox" id="cardSelect" v-model="useCards">Use card affix ({{ useCards ? "yes" : "no" }})<br>
+          <input type="text" v-if="useCards" v-model="cards" placeholder="card ID">
         </div>
       </div>
       <div id="billgroup" v-if="entLevel">

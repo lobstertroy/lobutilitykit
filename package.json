@@ -4,17 +4,10 @@
   "productName": "Lob Utility Kit",
   "author": "troy armstrong",
   "private": true,
-  "version": "0.6.0",
-  "build": {
-    "files": [
-      "dist/**/*",
-      "dist-electron/**/*",
-      "build/**/*"
-    ]
-  },
+  "version": "0.7.0",
   "scripts": {
     "dev": "vite build && vite",
-    "build": "vue-tsc && vite build && electron-builder",
+    "build": "vue-tsc && vite build && electron-builder -mwl",
     "preview": "vite preview"
   },
   "dependencies": {
