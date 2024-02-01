@@ -32,19 +32,19 @@ const singleSend = async (row) => {
     body: formData,
     redirect: "follow"
   }).then(res => {
-      if (res.id) {
-        pieceId.value = res.id;
-        deleteTest(res.id);
-        thumbnail = res.url;
-        retryFetch(thumbnail).then(resp => {
-          pagePreview.value = resp.url;
-        })
-          .catch(err => console.error(err))
-      } else if (res.error) {
-        error.value = res.error.status_code;
-        msg.value = res.error.message;
-      }
-    }).catch(err => console.error("Error sending test:", err))
+    if (res.id) {
+      pieceId.value = res.id;
+      deleteTest(res.id);
+      thumbnail = res.url;
+      retryFetch(thumbnail).then(resp => {
+        pagePreview.value = resp.url;
+      })
+        .catch(err => console.error(err))
+    } else if (res.error) {
+      error.value = res.error.status_code;
+      msg.value = res.error.message;
+    }
+  }).catch(err => console.error("Error sending test:", err))
 }
 const retryFetch = async (url, maxRetries = 10, retryInterval = 1500) => {
   let response;
@@ -99,14 +99,20 @@ async function parseRow(row) {
       for (const [key] of Object.entries(row["merge_variables"])) {
         formData.append(`merge_variables[${key}]`, row["merge_variables"][key])
       }
-    } else if (key === "return_envelope") {
-      formData.append(key, "no_9_single_window")
     }
   }
   for (const [key] of Object.entries(settings)) {
-    console.log(settings)
-    if (["metadata", "merge variables", "custom_envelope", "return_envelope", "cards"].includes(key)) continue;
-    if (key === "from") {
+    if (["metadata", "merge variables", "custom_envelope", "cards"].includes(key)) {
+      continue;
+    } else if (key === "return_envelope") {
+      let value = settings[key];
+      if (value === true) {
+        formData.append(key, true);
+      } else {
+        formData.append(key, "no_9_single_window");
+      }
+      continue;
+    } else if (key === "from") {
       formData.append("from[name]", "Test Piece");
       formData.append("from[address_line1]", "210 King St");
       formData.append("from[address_city]", "San Francisco");

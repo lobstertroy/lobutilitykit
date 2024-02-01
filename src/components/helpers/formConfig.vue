@@ -21,10 +21,12 @@ async function checkSfm() {
   }).then((res) => {
     if (res.status !== 404) {
       entLevel.value = true;
+      renvId.value = ('no_9_single_window')
     }
   }).catch(err => {
     console.error(err);
     entLevel.value = false;
+    renvId.value = true;
   })
 }
 
@@ -34,7 +36,7 @@ const doubleSided = ref(true);
 const colorSelect = ref(false);
 const useType = ref('');
 const useRenv = ref(false);
-const renvId = entLevel.value ? ref('no_9_single_window') : ref(true);
+const renvId = (entLevel.value) ? ref('no_9_single_window') : ref(true);
 const perfPage = ref(1);
 const useCenv = ref(false);
 const cenvId = ref('');
@@ -77,7 +79,7 @@ const continueEmit = () => {
     config["address_placement"] = adrPlace.value;
     if (useRenv.value) {
       config["return_envelope"] = renvId.value;
-      config["perforated_page"] = perfPage.value;
+      config["perforated_page"] = Number(perfPage.value);
     }
     if (useCenv.value) {
       config["custom_envelope"] = cenvId.value
@@ -128,11 +130,11 @@ const continueEmit = () => {
         </div>
         <h4>Misc options</h4>
         <div id="doubleSides">
-          <input type="checkbox" id="doublesided" v-model="doubleSided">{{ doubleSided ? 'Double-sided' : 'Single-sided'
+          <input type="checkbox" id="doublesided" v-model="doubleSided">Pagination toggle: {{ doubleSided ? 'Double-sided' : 'Single-sided'
           }}
         </div>
         <div id="colorSelect">
-          <input type="checkbox" id="fullcolor" v-model="colorSelect">{{ colorSelect ? 'Color' : 'Black & White' }}
+          <input type="checkbox" id="fullcolor" v-model="colorSelect">Color toggle: {{ colorSelect ? 'Color' : 'Black & White' }}
         </div>
         <div id="renv">
           <input type="checkbox" id="renvSelect" v-model="useRenv"><label for="renvSelect">Use return envelope ({{ useRenv
