@@ -120,54 +120,56 @@ const continueEmit = () => {
         Mail</label>
     </div>
     <div id="letters" v-if="format === 'letters'">
-        <div id="adrPlace">
-          <h4>Select address placement:</h4>
-          <input type="radio" id="top_first" value="top_first_page" v-model="adrPlace"><label for="top_first">Top first
-            page</label><br>
-          <input type="radio" id="insert_blank" value="insert_blank_page" v-model="adrPlace"><label
-            for="insert_blank">Insert
-            blank page</label>
-        </div>
-        <h4>Misc options</h4>
-        <div id="doubleSides">
-          <input type="checkbox" id="doublesided" v-model="doubleSided">Pagination toggle: {{ doubleSided ? 'Double-sided' : 'Single-sided'
-          }}
-        </div>
-        <div id="colorSelect">
-          <input type="checkbox" id="fullcolor" v-model="colorSelect">Color toggle: {{ colorSelect ? 'Color' : 'Black & White' }}
-        </div>
-        <div id="renv">
-          <input type="checkbox" id="renvSelect" v-model="useRenv"><label for="renvSelect">Use return envelope ({{ useRenv
-            ? 'yes' : 'no' }})</label><br v-if="useRenv && entLevel">
-          <input type="text" id="renvId" v-if="entLevel && useRenv" placeholder="envelope ID" v-model="renvId"><br>
-          <input type="number" id="perf" v-if="useRenv" v-model="perfPage" min=1 max="120"><label for="perf"
-            v-if="useRenv"> Select perforated page number <span v-if="adrPlace === 'insert_blank_page'">(does not include
-              address page)</span></label>
-        </div>
-        <div id="cenv" v-if="entLevel">
-          <input type="checkbox" id="cenvSelect" v-model="useCenv">Use custom envelope ({{ useCenv ? 'yes' : 'no' }})<br>
-          <input type="text" v-if="useCenv" placeholder="custom envelope ID" v-model="cenvId"><br v-if="useCenv">
-          <input type="checkbox" id="cardSelect" v-model="useCards">Use card affix ({{ useCards ? "yes" : "no" }})<br>
-          <input type="text" v-if="useCards" v-model="cards" placeholder="card ID">
-        </div>
+      <div id="adrPlace">
+        <h4>Select address placement:</h4>
+        <input type="radio" id="top_first" value="top_first_page" v-model="adrPlace"><label for="top_first">Top first
+          page</label><br>
+        <input type="radio" id="insert_blank" value="insert_blank_page" v-model="adrPlace"><label
+          for="insert_blank">Insert
+          blank page</label>
       </div>
-      <div id="billgroup" v-if="entLevel">
-        <h4>Billing group (optional)</h4>
-        <input type="text" v-model="billingGroup" placeholder="billing group ID">
+      <h4>Misc options</h4>
+      <div id="doubleSides">
+        <input type="checkbox" id="doublesided" v-model="doubleSided">Double-sided
       </div>
-      <div id="useType">
-        <h4>Use type:</h4>
-        <input type="radio" id="marketing" value="marketing" v-model="useType"><label
-          for="marketing">marketing</label><br>
-        <input type="radio" id="operational" value="operational" v-model="useType"><label
-          for="operational">operational</label>
+      <div id="colorSelect">
+        <input type="checkbox" id="fullcolor" v-model="colorSelect">Color
       </div>
+      <div id="renv">
+        <input type="checkbox" id="renvSelect" v-model="useRenv"><label for="renvSelect">Use return envelope ({{ useRenv
+          ? 'yes' : 'no' }})</label><br v-if="useRenv && entLevel">
+        <input type="text" id="renvId" v-if="entLevel && useRenv" placeholder="envelope ID" v-model="renvId"><br>
+        <input type="number" id="perf" v-if="useRenv" v-model="perfPage" min=1 max="120"><label for="perf" v-if="useRenv">
+          Select perforated page number <span v-if="adrPlace === 'insert_blank_page'">(does not include
+            address page)</span></label>
+      </div>
+      <div id="cenv" v-if="entLevel">
+        <input type="checkbox" id="cenvSelect" v-model="useCenv">Use custom envelope ({{ useCenv ? 'yes' : 'no' }})<br>
+        <input type="text" v-if="useCenv" placeholder="custom envelope ID" v-model="cenvId"><br v-if="useCenv">
+        <input type="checkbox" id="cardSelect" v-model="useCards">Use card affix ({{ useCards ? "yes" : "no" }})<br>
+        <input type="text" v-if="useCards" v-model="cards" placeholder="card ID">
+      </div>
+    </div>
+    <div id="billgroup" v-if="entLevel">
+      <h4>Billing group (optional)</h4>
+      <input type="text" v-model="billingGroup" placeholder="billing group ID">
+    </div>
+    <div id="useType">
+      <h4>Use type:</h4>
+      <input type="radio" id="marketing" value="marketing" v-model="useType"><label for="marketing">marketing</label><br>
+      <input type="radio" id="operational" value="operational" v-model="useType"><label
+        for="operational">operational</label>
+    </div>
     <button @click="continueEmit">Continue</button>
   </div>
 </template>
 
 <style scoped>
-#letters, #useType, #billgroup, #mailingClass, #sizeSelect {
+#letters,
+#useType,
+#billgroup,
+#mailingClass,
+#sizeSelect {
   padding-left: 75px;
   text-align: left;
   width: 300px;
