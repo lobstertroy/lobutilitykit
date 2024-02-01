@@ -4,7 +4,7 @@
   "productName": "Lob Utility Kit",
   "author": "troy armstrong",
   "private": true,
-  "version": "0.7.0",
+  "version": "0.7.2",
   "scripts": {
     "dev": "vite build && vite",
     "build": "vue-tsc && vite build && electron-builder -mwl",
