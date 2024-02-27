@@ -72,11 +72,13 @@ const searchIds = async (metadata) => {
     return res;
   }
   const data = [...res.data];
+  dataCount.value = data.length;
   var nextUrl = res.next_url;
   while (nextUrl !== null) {
     let resp = await backoffFetch(nextUrl, options);
     let next = resp.data;
     data.push(...next);
+    dataCount.value = data.length;
     nextUrl = resp.next_url;
   }
 
@@ -84,6 +86,8 @@ const searchIds = async (metadata) => {
   complete.value = true;
   searching.value = false;
 }
+
+const dataCount = ref(0);
 
 const pushKey = (value) => {
   apiKey.value = value;
@@ -113,12 +117,12 @@ const reset = () => {
     <h2>Your API key is missing or incorrect.<br>Please update your API key in the Settings tab.</h2>
   </div>
   <div v-else>
-    <h2 v-if="searching">Processing...</h2>
+    <h2 v-if="searching">Processing... <span v-if="dataCount"> {{ dataCount }} records found</span></h2>
     <EnvironmentSelect @pushKey="pushKey" @keyFail="keyFail" v-if="apiKey === ''"></EnvironmentSelect>
     <div v-if="apiKey !== ''">
-      <h4 v-if="formFactor !== '' && !complete">Searching for {{ formFactor }} <span v-if="dateBegin !== ''">made on or
+      <h4 v-if="formFactor !== '' && !complete">Searching for {{ formFactor }} <span v-if="dateBegin !== ''"> made on or
           after {{ dateBegin }} </span><span v-if="dateBegin !== '' && dateEnd !== ''">and </span><span
-          v-if="dateEnd !== ''">made on or before {{ dateEnd }} </span><span v-if="useMeta">with the metadata {{ metadata
+          v-if="dateEnd !== ''"> made on or before {{ dateEnd }} </span><span v-if="useMeta"> with the metadata {{ metadata
           }}</span></h4>
       <FormSelect @selectFormat="selectFormat" v-if="formFactor === '' && !showDates" :usekey="apiKey"></FormSelect>
       <DateFilter @dateRange="dateRange" v-if="showDates"></DateFilter>

@@ -89,7 +89,7 @@ const deleteTest = (id) => {
 async function parseRow(row) {
   const formData = new FormData();
   for (const [key] of Object.entries(row)) {
-    if (!['idempotency', "metadata", "to", "from", "merge_variables"].includes(key)) {
+    if (!['idempotency', "metadata", "to", "from", "merge_variables", "bank_account"].includes(key)) {
       formData.append(key, row[key])
     } else if (key === "to") {
       for (const [key] of Object.entries(row["to"])) {
@@ -107,20 +107,21 @@ async function parseRow(row) {
     } else if (key === "return_envelope") {
       let value = settings[key];
       if (value === true) {
-        formData.append(key, true);
+        formData.append(key, JSON.stringify(true));
       } else {
         formData.append(key, "no_9_single_window");
       }
-      continue;
     } else if (key === "from") {
       formData.append("from[name]", "Test Piece");
       formData.append("from[address_line1]", "210 King St");
       formData.append("from[address_city]", "San Francisco");
       formData.append("from[address_state]", "CA");
       formData.append("from[address_zip]", "94107")
-      continue;
+    } else if (key === "test_bank") {
+      formData.append("bank_account", settings[key]);
+    } else {
+      formData.append(key, settings[key])
     }
-    formData.append(key, settings[key])
   }
 
   if (settings["cards"]) {

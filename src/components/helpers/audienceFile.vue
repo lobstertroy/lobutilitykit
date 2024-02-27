@@ -120,7 +120,7 @@ const processEmit = async () => {
     <div v-for="field in allFields" :key="field">
       <h4 v-if="isFirstOfType(field)"> Map {{ required.includes(field) ? 'required' : optional.includes(field) ? 'optional' : 'merge variable' }} fields:</h4>
       <select v-model="mappings[field]" :required="required.includes(field)">
-        <option disabled value="">
+        <option>
           Select option...
         </option>
         <option v-for="(header, index) in headers" :key="header" :value="header" :disabled="isIndexSelected(header)">
