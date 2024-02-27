@@ -20,7 +20,7 @@ const confirmAll = () => {
 async function parseRow(row) {
   const formData = new FormData();
   for (const [key] of Object.entries(row)) {
-    if (key !== 'idempotency' && key !== "metadata" && key !== "to" && key !== "from" && key !== "merge_variables") {
+    if (!['idempotency', 'metadata', 'to', 'from', 'merge_variables'].includes(key)) {
       formData.append(key, row[key])
     } else if (key === "to") {
       for (const [key] of Object.entries(row["to"])) {
@@ -35,16 +35,9 @@ async function parseRow(row) {
   for (const [key] of Object.entries(settings)) {
     if (key === "metadata") continue;
     if (key === "merge_variables") continue;
+    if (key === "test_bank") continue;
     if (key === "cards") {
       formData.append("cards", JSON.stringify(settings["cards"]));
-      continue;
-    }
-    if (key === "from") {
-      formData.append("from[name]", "Test Piece");
-      formData.append("from[address_line1]", "210 King St");
-      formData.append("from[address_city]", "San Francisco");
-      formData.append("from[address_state]", "CA");
-      formData.append("from[address_zip]", "94107")
       continue;
     }
     formData.append(key, settings[key])

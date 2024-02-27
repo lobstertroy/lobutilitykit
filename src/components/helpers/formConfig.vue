@@ -42,6 +42,7 @@ const useCenv = ref(false);
 const cenvId = ref('');
 const billingGroup = ref('');
 const useCards = ref(false);
+const bank_account = ref('');
 const cards = ref('');
 const pscSize = ref('4x6');
 const sfmSize = ref('6x18_bifold');
@@ -78,7 +79,7 @@ const continueEmit = () => {
     config["color"] = colorSelect.value;
     config["address_placement"] = adrPlace.value;
     if (useRenv.value) {
-      config["return_envelope"] = renvId.value;
+      config["return_envelope"] = renvId.value === "true" ? true : renvId.value;
       config["perforated_page"] = Number(perfPage.value);
     }
     if (useCenv.value) {
@@ -90,6 +91,10 @@ const continueEmit = () => {
 
   if (format === 'self_mailers') {
     config["size"] = sfmSize.value;
+  }
+
+  if (format === 'checks') {
+    config["test_bank"] = bank_account.value
   }
 
   emit('config', config);
@@ -149,6 +154,10 @@ const continueEmit = () => {
         <input type="checkbox" id="cardSelect" v-model="useCards">Use card affix ({{ useCards ? "yes" : "no" }})<br>
         <input type="text" v-if="useCards" v-model="cards" placeholder="card ID">
       </div>
+    </div>
+    <div id="checkSetting" v-if="format === 'checks'">
+      <h4>Check Settings:</h4>
+      <input type="text" v-model="bank_account" id="bankAccount" placeholder="Test environment bank ID" required><label for="bankAccount">Test-environment bank account ID</label>
     </div>
     <div id="billgroup" v-if="entLevel">
       <h4>Billing group (optional)</h4>
